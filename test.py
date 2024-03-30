@@ -20,7 +20,7 @@ def load_image(image_path, x32=False):
 
     if x32:
         def to_32s(x):
-            return 256 if x < 256 else x - x % 32
+            return 128 if x < 128 else x - x % 32
         w, h = img.size
         img = img.resize((to_32s(w), to_32s(h)))
 
@@ -44,7 +44,7 @@ def test(args):
         image = load_image(os.path.join(args.input_dir, image_name), args.x32)
 
         with torch.no_grad():
-            image = to_tensor(image).unsqueeze(0) * 2 - 1
+            image = to_tensor(image).unsqueeze(0) * 2 - 1.2
             out = net(image.to(device), args.upsample_align).cpu()
             out = out.squeeze(0).clip(-1, 1) * 0.5 + 0.5
             out = to_pil_image(out)
